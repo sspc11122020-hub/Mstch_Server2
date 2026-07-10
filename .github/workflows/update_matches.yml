@@ -1,4 +1,4 @@
-name: Update Matches Data
+name: ستخراج مبارايات سيرفر 1
 
 on:
   schedule:
