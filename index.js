@@ -1,9 +1,9 @@
 const puppeteer = require('puppeteer');
 const fs = require('fs');
 
-const BASE_URL = 'https://www.korax90.net/matches-today';
+const API_URL = 'https://www.acmawards50.com/api.php?day=today';
 
-// دالة التقاط الروابط من الشبكة
+// دالة التقاط الروابط من الشبكة (كما هي بدون تغيير)
 async function getDirectStream(browser, iframeUrl) {
     if (!iframeUrl) return "";
     const fullIframeUrl = iframeUrl.startsWith('//') ? `https:${iframeUrl}` : iframeUrl;
@@ -42,52 +42,57 @@ async function getDirectStream(browser, iframeUrl) {
 async function scrapeMatches() {
     let browser;
     try {
-        console.log("🚀 جاري تهيئة المتصفح...");
-        browser = await puppeteer.launch({ 
-            headless: "new", 
-            args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-blink-features=AutomationControlled'] 
-        });
-
-        const page = await browser.newPage();
-        await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36');
+        console.log("📥 جاري جلب البيانات من الـ API...");
         
-        console.log("🔍 جاري فتح الموقع...");
-        await page.goto(BASE_URL, { waitUntil: 'networkidle2', timeout: 30000 });
-
-        const matches = await page.evaluate(() => {
-            const items = [];
-            document.querySelectorAll('.match-item').forEach(el => {
-                const btn = el.querySelector('button.match-row');
-                const teams = el.querySelectorAll('.team');
-                items.push({
-                    team1: teams[0]?.querySelector('.team-name')?.innerText.trim() || "",
-                    team1Logo: teams[0]?.querySelector('img')?.src || "",
-                    team2: teams[1]?.querySelector('.team-name')?.innerText.trim() || "",
-                    team2Logo: teams[1]?.querySelector('img')?.src || "",
-                    time: el.querySelector('.score-time')?.innerText.trim() || "",
-                    status: el.querySelector('.status-badge')?.innerText.trim() || "",
-                    league: el.querySelector('.league')?.innerText.trim() || "",
-                    streamUrl: btn?.getAttribute('data-frame') || "",
-                    channel: "غير متوفر",
-                    LastTime: new Date().toLocaleString('ar-EG'),
-                    stream: ""
-                });
+        // جلب البيانات من واجهة JSON مباشرة (يتطلب Node.js 18 أو أحدث)
+        const response = await fetch(API_URL);
+        const data = await response.json();
+        
+        let finalMatches = [];
+        
+        // التحقق من وجود مباريات في الرد
+        if (data && data.success && Array.isArray(data.matches) && data.matches.length > 0) {
+            console.log("🚀 جاري تهيئة المتصفح لاستخراج البثوث...");
+            browser = await puppeteer.launch({ 
+                headless: "new", 
+                args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-blink-features=AutomationControlled'] 
             });
-            return items;
-        });
 
-        for (let match of matches) {
-            if (match.streamUrl) {
-                console.log(`⏳ جاري استخراج بث: ${match.team1}`);
-                match.stream = await getDirectStream(browser, match.streamUrl);
+            for (let match of data.matches) {
+                console.log(`⏳ جاري استخراج بث: ${match.home_team}`);
+                
+                let streamLink = "";
+                if (match.match_url) {
+                    streamLink = await getDirectStream(browser, match.match_url);
+                }
+
+                // هيكلة البيانات لتطابق النسخة الثابتة المطلوبة
+                finalMatches.push({
+                    team1: match.home_team || "",
+                    team1Logo: match.home_logo || "",
+                    team2: match.away_team || "",
+                    team2Logo: match.away_logo || "",
+                    time: match.time || "",
+                    status: match.status_text || "",
+                    league: match.league || "",
+                    streamUrl: match.match_url || "",
+                    channel: match.channel || "غير متوفر",
+                    LastTime: new Date().toLocaleString('ar-EG'),
+                    stream: streamLink
+                });
             }
+        } else {
+            console.log("⚠️ لا توجد مباريات أو البيانات فارغة، سيتم إنشاء مصفوفة فارغة.");
         }
 
-        fs.writeFileSync('match1.json', JSON.stringify(matches, null, 2), 'utf8');
+        // حفظ المصفوفة سواء كانت ممتلئة أو فارغة [ ]
+        fs.writeFileSync('match1.json', JSON.stringify(finalMatches, null, 2), 'utf8');
         console.log("✅ انتهى العمل. تم حفظ البيانات في match1.json");
 
     } catch (error) {
         console.error('❌ خطأ فادح:', error.message);
+        // توليد مصفوفة فارغة في حالة حدوث فشل بالاتصال لضمان عدم توقف التطبيق الذي يقرأ الملف
+        fs.writeFileSync('match1.json', JSON.stringify([], null, 2), 'utf8');
     } finally {
         if (browser) await browser.close();
     }
