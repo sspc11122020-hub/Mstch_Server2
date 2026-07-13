@@ -1,7 +1,7 @@
 const puppeteer = require('puppeteer');
 const fs = require('fs');
 
-const API_URL = 'https://www.acmawards50.com/api.php?day=today';
+const API_URL = 'https://www.acmawards50.com/api.php?day=yesterday&_=1783922837610';
 
 // دالة التقاط الروابط من الشبكة (كما هي بدون تغيير)
 async function getDirectStream(browser, iframeUrl) {
