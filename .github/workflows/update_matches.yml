@@ -18,8 +18,10 @@ jobs:
           node-version: '18'
 
       - name: Install Dependencies
-        # إضافة الأمر الخاص بتحميل متصفح كروم الخاص بـ Puppeteer
+        # تم إضافة الأوامر لإنشاء package.json وتحديد نوع الموديول
         run: |
+          npm init -y
+          npm pkg set type="module"
           npm install axios puppeteer
           npx puppeteer browsers install chrome
 
