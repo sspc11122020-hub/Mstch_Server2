@@ -2,8 +2,14 @@ name: مباريات
 
 on:
   schedule:
-    - cron: '*/10 * * * *' # يعمل كل 10 دقائق
-  workflow_dispatch: # يتيح لك تشغيله يدوياً للتجربة
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
+
+# ----------------------------------------
+# تمت إضافة هذا الجزء لإعطاء صلاحية الرفع
+permissions:
+  contents: write
+# ----------------------------------------
 
 jobs:
   build:
@@ -18,7 +24,6 @@ jobs:
           node-version: '18'
 
       - name: Install Dependencies
-        # تم إضافة الأوامر لإنشاء package.json وتحديد نوع الموديول
         run: |
           npm init -y
           npm pkg set type="module"
