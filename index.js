@@ -1,101 +1,133 @@
-const puppeteer = require('puppeteer');
-const fs = require('fs');
+import puppeteer from 'puppeteer';
+import axios from 'axios';
+import fs from 'fs';
 
-const API_URL = 'https://www.acmawards50.com/api.php';
+/**
+ * دالة متقدمة لاستخراج الـ m3u8 من خلال التنقل في السيرفرات المتعددة
+ */
+async function extractM3u8WithBrowser(mainIframeUrl, browser) {
+    const page = await browser.newPage();
+    let validM3u8 = "";
 
-// دالة التقاط الروابط من الشبكة (كما هي بدون تغيير)
-async function getDirectStream(browser, iframeUrl) {
-    if (!iframeUrl) return "";
-    const fullIframeUrl = iframeUrl.startsWith('//') ? `https:${iframeUrl}` : iframeUrl;
-
-    return new Promise(async (resolve) => {
-        let found = false;
-        let page;
-        try {
-            page = await browser.newPage();
-            // محاكاة متصفح حقيقي بالكامل
-            await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36');
-            
-            page.on('request', (request) => {
-                if (request.url().includes('.m3u8') && !found) {
-                    found = true;
-                    resolve(request.url());
-                    page.close().catch(() => {});
-                }
-            });
-
-            await page.goto(fullIframeUrl, { waitUntil: 'networkidle2', timeout: 25000 });
-            
-            // محاكاة نقرة للبدء (ضرورية للمشغلات)
-            await page.mouse.click(500, 300).catch(() => {});
-            
-            setTimeout(() => {
-                if (!found) { page.close().catch(() => {}); resolve(""); }
-            }, 12000);
-        } catch (e) {
-            if (page) await page.close().catch(() => {});
-            resolve("");
+    await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
+    
+    // مراقبة الاستجابة (صيد روابط m3u8 فقط)
+    page.on('response', (response) => {
+        const url = response.url();
+        if (url.includes('.m3u8') && !url.includes('/ad/') && !validM3u8 && response.status() === 200) {
+            validM3u8 = url;
+            console.log(`[+] تم العثور على رابط m3u8 فعال: ${url}`);
         }
     });
+
+    try {
+        await page.goto(mainIframeUrl, { waitUntil: 'domcontentloaded', timeout: 30000 });
+
+        // 1. جمع كل روابط السيرفرات الأساسية
+        const mainServers = await page.$$eval('.servers_list a', elements => elements.map(a => a.href));
+        
+        for (let serverUrl of mainServers) {
+            if (validM3u8) break;
+            
+            console.log(`-> جاري فحص السيرفر الفرعي: ${serverUrl}`);
+            await page.goto(serverUrl, { waitUntil: 'domcontentloaded', timeout: 15000 });
+            await new Promise(r => setTimeout(r, 2000));
+
+            // 2. البحث عن سيرفرات داخلية (مثل aplr-menu) والنقر عليها
+            const subServers = await page.$$('.aplr-menu a[role="button"]');
+            
+            // نحاول النقر على السيرفرات الداخلية
+            for (let subBtn of subServers) {
+                if (validM3u8) break;
+                
+                await subBtn.click().catch(() => {});
+                // النقر في المنتصف لتشغيل الفيديو واستدعاء الرابط
+                await page.mouse.click(640, 360); 
+                await new Promise(r => setTimeout(r, 3000));
+            }
+        }
+    } catch (e) {
+        console.log(`⚠️ خطأ أثناء التصفح: ${e.message}`);
+    } finally {
+        await page.close();
+    }
+    return validM3u8;
 }
 
-async function scrapeMatches() {
-    let browser;
+// دالة لجلب رابط الـ Iframe من صفحة المباراة الأساسية
+async function getServerIframeUrl(pageUrl) {
+    if (!pageUrl) return "";
     try {
-        console.log("📥 جاري جلب البيانات من الـ API...");
-        
-        // جلب البيانات من واجهة JSON مباشرة (يتطلب Node.js 18 أو أحدث)
-        const response = await fetch(API_URL);
-        const data = await response.json();
-        
-        let finalMatches = [];
-        
-        // التحقق من وجود مباريات في الرد
-        if (data && data.success && Array.isArray(data.matches) && data.matches.length > 0) {
-            console.log("🚀 جاري تهيئة المتصفح لاستخراج البثوث...");
-            browser = await puppeteer.launch({ 
-                headless: "new", 
-                args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-blink-features=AutomationControlled'] 
-            });
-
-            for (let match of data.matches) {
-                console.log(`⏳ جاري استخراج بث: ${match.home_team}`);
-                
-                let streamLink = "";
-                if (match.match_url) {
-                    streamLink = await getDirectStream(browser, match.match_url);
-                }
-
-                // هيكلة البيانات لتطابق النسخة الثابتة المطلوبة
-                finalMatches.push({
-                    team1: match.home_team || "",
-                    team1Logo: match.home_logo || "",
-                    team2: match.away_team || "",
-                    team2Logo: match.away_logo || "",
-                    time: match.time || "",
-                    status: match.status_text || "",
-                    league: match.league || "",
-                    streamUrl: match.match_url || "",
-                    channel: match.channel || "غير متوفر",
-                    LastTime: new Date().toLocaleString('ar-EG'),
-                    stream: streamLink
-                });
+        const { data } = await axios.get(pageUrl, {
+            headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)' },
+            timeout: 10000 
+        });
+        // البحث عن الـ iframes داخل الصفحة
+        const iframes = data.match(/<iframe[^>]+>/gi) || [];
+        for (let iframe of iframes) {
+            // شروط مبدئية لاستخراج مشغل الفيديو
+            if (iframe.includes('id="main-player"') || iframe.includes('/tv/') || iframe.includes('embed')) {
+                const srcMatch = iframe.match(/src=["']([^"']+)["']/i);
+                if (srcMatch) return srcMatch[1];
             }
-        } else {
-            console.log("⚠️ لا توجد مباريات أو البيانات فارغة، سيتم إنشاء مصفوفة فارغة.");
         }
+        return "";
+    } catch (e) { return ""; }
+}
 
-        // حفظ المصفوفة سواء كانت ممتلئة أو فارغة [ ]
-        fs.writeFileSync('match1.json', JSON.stringify(finalMatches, null, 2), 'utf8');
-        console.log("✅ انتهى العمل. تم حفظ البيانات في match1.json");
+// الدالة الرئيسية لجلب البيانات من الـ API الجديد
+async function scrapeMatches() {
+    let browser = null;
+    try {
+        browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox'] });
+        
+        // جلب البيانات من الـ API الجديد
+        const { data } = await axios.get('https://www.acmawards50.com/api.php');
+        const matchesData = data.matches || [];
+        const formattedMatches = [];
 
+        for (let i = 0; i < matchesData.length; i++) {
+            const matchInfo = matchesData[i];
+            
+            // استخراج رابط المباراة من الهيكل الجديد
+            const matchUrl = matchInfo.match_url || "";
+            const streamUrl = await getServerIframeUrl(matchUrl);
+            let directStream = "";
+            
+            if (streamUrl) {
+                console.log(`🔍 معالجة: ${matchInfo.home_team} vs ${matchInfo.away_team}`);
+                // فحص واستخراج الـ m3u8
+                directStream = await extractM3u8WithBrowser(streamUrl, browser);
+            }
+
+            // تنسيق البيانات بالشكل المطلوب لتصديرها لاحقاً
+            formattedMatches.push({
+                id: matchInfo.id || i + 1,
+                team1: matchInfo.home_team || "",
+                team1Logo: matchInfo.home_logo || "",
+                team2: matchInfo.away_team || "",
+                team2Logo: matchInfo.away_logo || "",
+                time: matchInfo.time || "",
+                status: matchInfo.status_text || "",
+                channel: matchInfo.channel || "",
+                commentator: matchInfo.commentator || "",
+                league: matchInfo.league || "",
+                matchUrl: matchUrl,
+                streamUrl: streamUrl,     // رابط الـ Iframe المدمج
+                stream: directStream      // رابط الـ m3u8 النهائي (إن وجد)
+            });
+        }
+        
+        // حفظ المخرجات في ملف JSON
+        fs.writeFileSync('matches.json', JSON.stringify(formattedMatches, null, 2), 'utf8');
+        console.log('✅ اكتملت العملية بنجاح! تم حفظ البيانات في matches.json');
+        
     } catch (error) {
-        console.error('❌ خطأ فادح:', error.message);
-        // توليد مصفوفة فارغة في حالة حدوث فشل بالاتصال لضمان عدم توقف التطبيق الذي يقرأ الملف
-        fs.writeFileSync('match1.json', JSON.stringify([], null, 2), 'utf8');
+        console.error('❌ خطأ:', error.message);
     } finally {
         if (browser) await browser.close();
     }
 }
 
+// تشغيل السكربت
 scrapeMatches();
