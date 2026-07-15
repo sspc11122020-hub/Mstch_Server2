@@ -2,14 +2,16 @@
   {
     "id": 1,
     "team1": "إنجلترا",
-    "team1Logo": "https://livahd7.com/wp-content/uploads/2023/03/إنجلترا",
+    "team1Logo": "https://beiinmatch.club/wp-content/uploads/2025/06/5054.png",
     "team2": "الأرجنتين",
-    "team2Logo": "https://livahd7.com/wp-content/uploads/2022/12/الأرجنتين",
-    "time": "",
-    "status": "Upcoming",
-    "channel": "beIN Max 1",
-    "league": "كأس العالم",
-    "streamUrl": "https://liva7hd.info/tv/bein1/",
+    "team2Logo": "https://beiinmatch.club/wp-content/uploads/2025/06/2378.png",
+    "time": "10:00 PM",
+    "status": "لم تبدأ بعد",
+    "channel": "beIN SPORTS MAX 1",
+    "commentator": "غير معروف",
+    "league": "دولي, كأس العالم - نصف النهائي",
+    "matchUrl": "https://creationsnamale.com/",
+    "streamUrl": "https://partneta.cdn.mgmlcdn.com/omsport/smil:omsport.stream.smil/index.m3u8",
     "stream": "https://partneta.cdn.mgmlcdn.com/omsport/smil:omsport.stream.smil/index.m3u8"
   }
 ]
