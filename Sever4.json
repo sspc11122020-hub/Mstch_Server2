@@ -1,15 +1,15 @@
 [
-   {
-    "team1": "فرنسا",
-    "team1Logo": "https://www.korax90.co/uploads/1783813214_6a52d45e00c85.png",
-    "team2": "إسبانيا",
-    "team2Logo": "https://www.korax90.co/uploads/1783813214_6a52d45e00e48.png",
-    "time": "0 - 0",
-    "status": "مباشر الآن",
-    "league": "كأس العالم نصف نهائي",
-    "streamUrl": "https://912acsss8af382.fabortvcdn.com/playerv5.php?match=4764951&key=9f39972b67d6ce22189507d008acwc26",
-    "channel": "غير متوفر",
-    "LastTime": "١٤‏/٧‏/٢٠٢٦، ٧:٠١:٤١ م",
-    "stream": "https://a18.kora-plus.app/live/alwan1.m3u8?token=ZN_ha4DuM8JQrwkRqy9OugRT_TA&exp=1784060759"
+  {
+    "id": 1,
+    "team1": "إنجلترا",
+    "team1Logo": "https://livahd7.com/wp-content/uploads/2023/03/إنجلترا",
+    "team2": "الأرجنتين",
+    "team2Logo": "https://livahd7.com/wp-content/uploads/2022/12/الأرجنتين",
+    "time": "",
+    "status": "Upcoming",
+    "channel": "beIN Max 1",
+    "league": "كأس العالم",
+    "streamUrl": "https://liva7hd.info/tv/bein1/",
+    "stream": "https://3.simokora.com/my-hls/0wo68p0w54v/source/index.m3u8"
   }
 ]
