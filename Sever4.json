@@ -1,17 +1,18 @@
 [
   {
     "id": 1,
-    "team1": "إنجلترا",
-    "team1Logo": "https://beiinmatch.club/wp-content/uploads/2025/06/5054.png",
-    "team2": "الأرجنتين",
-    "team2Logo": "https://beiinmatch.club/wp-content/uploads/2025/06/2378.png",
-    "time": "10:00 PM",
-    "status": "لم تبدأ بعد",
+    "team1": "فرنسا",
+    "team1Logo": "https://beiinmatch.club/wp-content/uploads/2025/06/download.png",
+    "team2": "إنجلترا",
+    "team2Logo": "https://beiinmatch.club/wp-content/uploads/2025/06/5054.png",
+    "time": "11:59 PM",
+    "score": "0 - 0",
+    "status": "مباشر",
     "channel": "beIN SPORTS MAX 1",
     "commentator": "غير معروف",
-    "league": "دولي, كأس العالم - نصف النهائي",
-    "matchUrl": "https://creationsnamale.com/",
-    "streamUrl": "https://partneta.cdn.mgmlcdn.com/omsport/smil:omsport.stream.smil/index.m3u8",
-    "stream": "https://partneta.cdn.mgmlcdn.com/omsport/smil:omsport.stream.smil/index.m3u8"
+    "league": "دولي, كأس العالم - المركز الثالث",
+    "matchUrl": "https://a14.kora-plus.li/live/alwan1.m3u8?token=UIqWL3g1BHw_YTMGUT2_iuX9oS4&exp=1784409143",
+    "streamUrl": "https://a14.kora-plus.li/live/alwan1.m3u8?token=UIqWL3g1BHw_YTMGUT2_iuX9oS4&exp=1784409143",
+    "stream": "https://a14.kora-plus.li/live/alwan1.m3u8?token=UIqWL3g1BHw_YTMGUT2_iuX9oS4&exp=1784409143"
   }
 ]
