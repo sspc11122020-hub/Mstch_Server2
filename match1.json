@@ -1,15 +1,18 @@
 [
-   {
+  {
+    "id": 1,
     "team1": "فرنسا",
-    "team1Logo": "https://www.korax90.co/uploads/1783813214_6a52d45e00c85.png",
-    "team2": "إسبانيا",
-    "team2Logo": "https://www.korax90.co/uploads/1783813214_6a52d45e00e48.png",
-    "time": "0 - 0",
-    "status": "مباشر الآن",
-    "league": "كأس العالم نصف نهائي",
-    "streamUrl": "https://912acsss8af382.fabortvcdn.com/playerv5.php?match=4764951&key=9f39972b67d6ce22189507d008acwc26",
-    "channel": "غير متوفر",
-    "LastTime": "١٤‏/٧‏/٢٠٢٦، ٧:٠١:٤١ م",
-    "stream": "https://a20.kora-plus.app/live/max1.m3u8?token=j04CZcNv1JtqaPp08snLOVePoP8&exp=1784060814"
+    "team1Logo": "https://beiinmatch.club/wp-content/uploads/2025/06/download.png",
+    "team2": "إنجلترا",
+    "team2Logo": "https://beiinmatch.club/wp-content/uploads/2025/06/5054.png",
+    "time": "11:59 PM",
+    "score": "0 - 0",
+    "status": "لم تبدأ بعد",
+    "channel": "beIN SPORTS MAX 1",
+    "commentator": "غير معروف",
+    "league": "دولي, كأس العالم - المركز الثالث",
+    "matchUrl": "https://a11.kora-plus.li/live/max1.m3u8?token=x1dYrTmoolWDx8rGuKr-Eiyot3w&exp=1784409006",
+    "streamUrl": "https://a11.kora-plus.li/live/max1.m3u8?token=x1dYrTmoolWDx8rGuKr-Eiyot3w&exp=1784409006",
+    "stream": "https://a11.kora-plus.li/live/max1.m3u8?token=x1dYrTmoolWDx8rGuKr-Eiyot3w&exp=1784409006"
   }
 ]
