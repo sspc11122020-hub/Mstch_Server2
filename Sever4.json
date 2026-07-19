@@ -1,18 +1,15 @@
 [
   {
-    "id": 1,
-    "team1": "فرنسا",
-    "team1Logo": "https://beiinmatch.club/wp-content/uploads/2025/06/download.png",
-    "team2": "إنجلترا",
-    "team2Logo": "https://beiinmatch.club/wp-content/uploads/2025/06/5054.png",
-    "time": "11:59 PM",
-    "score": "0 - 0",
-    "status": "مباشر",
-    "channel": "beIN SPORTS MAX 1",
-    "commentator": "غير معروف",
-    "league": "دولي, كأس العالم - المركز الثالث",
-    "matchUrl": "https://a14.kora-plus.li/live/alwan1.m3u8?token=UIqWL3g1BHw_YTMGUT2_iuX9oS4&exp=1784409143",
-    "streamUrl": "https://majed-koora.com/assets/res2/java2/0b9481f2cde4/9b72c4.php?q=eyJlIjoxNzg0NDA4ODM4LCJiIjoiMmJkZmIzZjY4ZTdkYzNmNTY5ODI5NzYzMjNlNDczNjA5MGFlOGU1MyIsIm0iOiI0NjUzODU3IiwicyI6InNydl8xNzg0Mzk1ODQzODYxIiwibiI6Ijc0YWI4ZGVkNmU4MWVkZTEifQ.nFVisooohsyc_LpwBuvrNm3z8bv0OF5faf1BNW_1oY0",
-    "stream": "https://a14.kora-plus.li/live/alwan1.m3u8?token=UIqWL3g1BHw_YTMGUT2_iuX9oS4&exp=1784409143"
-  }
+    "team1": "إسبانيا",
+    "team1Logo": "https://www.korax90.co/uploads/1784151183_6a57fc8f90bba.png",
+    "team2": "الأرجنتين",
+    "team2Logo": "https://www.korax90.co/uploads/1784151183_6a57fc8f90df7.png",
+    "time": "20:00",
+    "status": "🔴 مباشر الآن",
+    "league": "كأس العالم النهائي",
+    "streamUrl": "https://stream.gumlet.io/6a5d0ca29c3fca7761fb7296/6a5d0cfbaf8068270279be49/main.m3u8",
+    "channel": "غير متوفر",
+    "LastTime": "١٩‏/٧‏/٢٠٢٦، ٧:٠١:٣٨ م",
+    "stream": "https://ffa1009.s3.us-east-2.amazonaws.com/live1/tracks-v1a1/mono.m3u8"
+  },
 ]
